@@ -91,12 +91,12 @@ const tests = {
 		},
 		{
 			code: `
-				let a, validVariable, b;
-				console.log(a, validVariable, b);
+				let a, b;
+				console.log(a, b);
 			`,
 			output: `
-				let alpha, validVariable, beta;
-				console.log(alpha, validVariable, beta);
+				let alpha, beta;
+				console.log(alpha, beta);
 			`,
 			errors
 		}
