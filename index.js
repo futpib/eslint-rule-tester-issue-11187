@@ -1,5 +1,5 @@
 
-const {RuleTester} = require('eslint');
+const {RuleTester, CLIEngine} = require('eslint');
 
 const getNameReplacement = name => {
 	if (name === 'a') {
@@ -70,10 +70,12 @@ const rule = {
 	}
 };
 
+const parserOptions = {
+	ecmaVersion: 6
+};
+
 const ruleTester = new RuleTester({
-	parserOptions: {
-		ecmaVersion: 6
-	}
+	parserOptions
 });
 
 const errors = [{ruleId: 'rule'}, {ruleId: 'rule'}];
@@ -89,17 +91,35 @@ const tests = {
 		},
 		{
 			code: `
-				let a, b;
-				console.log(a, b);
+				let a, validVariable, b;
+				console.log(a, validVariable, b);
 			`,
 			output: `
-				let alpha, beta;
-				console.log(alpha, beta);
+				let alpha, validVariable, beta;
+				console.log(alpha, validVariable, beta);
 			`,
 			errors
 		}
 	]
 };
+
+const cliEngine = new CLIEngine({
+	fix: false,
+	parserOptions
+});
+
+console.log('-'.repeat(80));
+console.log('Running with CLIEngine');
+
+cliEngine.linter.defineRule('rule', rule);
+
+for (const test of tests.invalid) {
+	const result = cliEngine.executeOnText(test.code);
+	console.log('executeOnText:', JSON.stringify(result, null, 2));
+}
+
+console.log('-'.repeat(80));
+console.log('Running with RuleTester');
 
 try {
 	ruleTester.run('rule', rule, tests);

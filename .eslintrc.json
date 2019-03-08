@@ -1,0 +1,6 @@
+{
+	"root": true,
+    "rules": {
+        "rule": "error"
+    }
+}
